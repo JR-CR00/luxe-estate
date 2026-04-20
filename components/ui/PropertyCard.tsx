@@ -1,12 +1,36 @@
 import Image from "next/image";
-import { Property } from "@/data/mockProperties";
+
+// Supports both Supabase DB records (snake_case) and legacy mock data (camelCase)
+export interface PropertyRecord {
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  currency: string;
+  price_type?: string | null;
+  priceType?: string | null; // legacy camelCase support
+  beds: number;
+  baths: number;
+  area: number;
+  image_url?: string;
+  imageUrl?: string; // legacy camelCase support
+  type: string;
+  status: "FOR SALE" | "FOR RENT";
+  badges?: string[] | null;
+  is_new?: boolean | null;
+  is_featured?: boolean | null;
+}
 
 interface PropertyCardProps {
-  property: Property;
+  property: PropertyRecord;
   featured?: boolean;
 }
 
 export default function PropertyCard({ property, featured = false }: PropertyCardProps) {
+  // Normalize snake_case (Supabase) and camelCase (mock) fields
+  const imageUrl = property.image_url ?? property.imageUrl ?? "";
+  const priceType = property.price_type ?? property.priceType ?? null;
+
   if (featured) {
     return (
       <div className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer">
@@ -16,13 +40,20 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
             className="object-cover transition-transform duration-700 group-hover:scale-105"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
-            src={property.imageUrl}
+            src={imageUrl}
           />
-          {property.badges && property.badges[0] && (
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-nordic-dark">
-              {property.badges[0]}
-            </div>
-          )}
+          <div className="absolute top-4 left-4 flex flex-col gap-2">
+            {property.is_new && (
+              <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">
+                New
+              </span>
+            )}
+            {property.badges && property.badges[0] && (
+              <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-nordic-dark">
+                {property.badges[0]}
+              </span>
+            )}
+          </div>
           <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-nordic-dark hover:bg-mosque hover:text-white transition-all z-10">
             <span className="material-icons text-xl">favorite_border</span>
           </button>
@@ -41,8 +72,8 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
             <span className="text-xl font-semibold text-mosque">
               {property.currency}
               {property.price.toLocaleString()}
-              {property.priceType && (
-                <span className="text-sm font-normal text-nordic-muted">{property.priceType}</span>
+              {priceType && (
+                <span className="text-sm font-normal text-nordic-muted">{priceType}</span>
               )}
             </span>
           </div>
@@ -70,11 +101,12 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          src={property.imageUrl}
+          src={imageUrl}
         />
         <button className="absolute top-3 right-3 p-2 bg-white/90 rounded-full hover:bg-mosque hover:text-white transition-colors text-nordic-dark z-10">
           <span className="material-icons text-lg">favorite_border</span>
         </button>
+        {/* Status badge */}
         <div
           className={`absolute bottom-3 left-3 text-white text-xs font-bold px-2 py-1 rounded ${
             property.status === "FOR RENT" ? "bg-mosque/90" : "bg-nordic-dark/90"
@@ -82,14 +114,20 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
         >
           {property.status}
         </div>
+        {/* New badge */}
+        {property.is_new && (
+          <div className="absolute top-3 left-3 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded shadow-md">
+            New
+          </div>
+        )}
       </div>
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex justify-between items-baseline mb-2">
           <h3 className="font-bold text-lg text-nordic-dark">
             {property.currency}
             {property.price.toLocaleString()}
-            {property.priceType && (
-              <span className="text-sm font-normal text-nordic-muted">{property.priceType}</span>
+            {priceType && (
+              <span className="text-sm font-normal text-nordic-muted">{priceType}</span>
             )}
           </h3>
         </div>

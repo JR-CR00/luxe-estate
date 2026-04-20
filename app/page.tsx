@@ -1,11 +1,40 @@
 import Navbar from "@/components/layout/Navbar";
 import FilterBar from "@/components/ui/FilterBar";
 import PropertyCard from "@/components/ui/PropertyCard";
-import { mockProperties } from "@/data/mockProperties";
+import Pagination from "@/components/ui/Pagination";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
-  const featuredProperties = mockProperties.slice(0, 2);
-  const newProperties = mockProperties.slice(2);
+const PAGE_SIZE = 8;
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { page = "1" } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page as string, 10) || 1);
+
+  const supabase = await createClient();
+
+  // Fetch properties flagged as featured in the DB
+  const { data: featuredProperties } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("is_featured", true)
+    .order("created_at", { ascending: false });
+
+  // Fetch paginated non-featured properties
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  const { data: newProperties, count } = await supabase
+    .from("properties")
+    .select("*", { count: "exact" })
+    .eq("is_featured", false)
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE);
 
   return (
     <>
@@ -40,30 +69,34 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-light text-nordic-dark">
-                Featured Collections
-              </h2>
-              <p className="text-nordic-muted mt-1 text-sm">
-                Curated properties for the discerning eye.
-              </p>
+        {/* Featured Collections */}
+        {featuredProperties && featuredProperties.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-light text-nordic-dark">
+                  Featured Collections
+                </h2>
+                <p className="text-nordic-muted mt-1 text-sm">
+                  Curated properties for the discerning eye.
+                </p>
+              </div>
+              <a
+                className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity"
+                href="#"
+              >
+                View all <span className="material-icons text-sm">arrow_forward</span>
+              </a>
             </div>
-            <a
-              className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity"
-              href="#"
-            >
-              View all <span className="material-icons text-sm">arrow_forward</span>
-            </a>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {featuredProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} featured />
-            ))}
-          </div>
-        </section>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {featuredProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} featured />
+              ))}
+            </div>
+          </section>
+        )}
 
+        {/* New in Market */}
         <section>
           <div className="flex items-end justify-between mb-8">
             <div>
@@ -86,23 +119,25 @@ export default function Home() {
               </button>
             </div>
           </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {newProperties.map((property, index) => (
+            {(newProperties ?? []).map((property, index) => (
               <div
                 key={property.id}
                 className={
-                  index === 4 ? "hidden xl:flex h-full" : index === 5 ? "hidden lg:flex h-full" : "h-full"
+                  index === 4
+                    ? "hidden xl:flex h-full"
+                    : index === 5
+                    ? "hidden lg:flex h-full"
+                    : "h-full"
                 }
               >
                 <PropertyCard property={property} />
               </div>
             ))}
           </div>
-          <div className="mt-12 text-center">
-            <button className="px-8 py-3 bg-white border border-nordic-dark/10 hover:border-mosque hover:text-mosque text-nordic-dark font-medium rounded-lg transition-all hover:shadow-md">
-              Load more properties
-            </button>
-          </div>
+
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
         </section>
       </main>
     </>
