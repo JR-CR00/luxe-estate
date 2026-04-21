@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import LanguageSelector from "@/components/ui/LanguageSelector";
+import { Locale } from "@/lib/i18n";
 
-export default function Navbar() {
+export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) {
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,28 +21,29 @@ export default function Navbar() {
               className="text-mosque font-medium text-sm border-b-2 border-mosque px-1 py-1"
               href="#"
             >
-              Buy
+              {dict.nav.buy}
             </Link>
             <Link
               className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all"
               href="#"
             >
-              Rent
+              {dict.nav.rent}
             </Link>
             <Link
               className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all"
               href="#"
             >
-              Sell
+              {dict.nav.sell}
             </Link>
             <Link
               className="text-nordic-dark/70 hover:text-nordic-dark font-medium text-sm hover:border-b-2 hover:border-nordic-dark/20 px-1 py-1 transition-all"
               href="#"
             >
-              Saved Homes
+              {dict.nav.savedHomes}
             </Link>
           </div>
           <div className="flex items-center space-x-6">
+            <LanguageSelector currentLocale={locale} />
             <button className="text-nordic-dark hover:text-mosque:text-white transition-colors">
               <span className="material-icons">search</span>
             </button>
@@ -51,7 +54,7 @@ export default function Navbar() {
             <button className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2">
               <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all relative">
                 <Image
-                  alt="Profile"
+                  alt={dict.nav.profileAlt}
                   className="object-cover"
                   fill
                   sizes="36px"
@@ -68,25 +71,25 @@ export default function Navbar() {
             className="block px-3 py-2 rounded-md text-base font-medium text-mosque bg-mosque/10"
             href="#"
           >
-            Buy
+            {dict.nav.buy}
           </Link>
           <Link
             className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5"
             href="#"
           >
-            Rent
+            {dict.nav.rent}
           </Link>
           <Link
             className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5"
             href="#"
           >
-            Sell
+            {dict.nav.sell}
           </Link>
           <Link
             className="block px-3 py-2 rounded-md text-base font-medium text-nordic-dark hover:bg-black/5"
             href="#"
           >
-            Saved Homes
+            {dict.nav.savedHomes}
           </Link>
         </div>
       </div>

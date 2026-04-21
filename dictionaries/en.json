@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "buy": "Buy",
+    "rent": "Rent",
+    "sell": "Sell",
+    "savedHomes": "Saved Homes",
+    "profileAlt": "Profile photo"
+  },
+  "common": {
+    "viewAll": "View all",
+    "search": "Search",
+    "beds": "Beds",
+    "baths": "Baths",
+    "sqft": "sqft",
+    "price": "Price",
+    "location": "Location",
+    "type": "Type",
+    "amenities": "Amenities",
+    "anyType": "Any Type",
+    "apply": "Apply",
+    "clearAll": "Clear All",
+    "filters": "Filters",
+    "prev": "Previous",
+    "next": "Next",
+    "allRightsReserved": "All rights reserved.",
+    "types": {
+      "all": "All",
+      "house": "House",
+      "apartment": "Apartment",
+      "villa": "Villa",
+      "penthouse": "Penthouse"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Find your {sanctuary}",
+      "sanctuary": "sanctuary"
+    },
+    "featured": {
+      "title": "Featured Collections",
+      "subtitle": "Curated properties for the discerning eye."
+    },
+    "listings": {
+      "newInMarket": "New in Market",
+      "searchResults": "Search Results",
+      "freshOpportunities": "Fresh opportunities added this week.",
+      "matchingCriteria": "Found {count} properties matching your criteria."
+    }
+  },
+  "propertyCard": {
+    "new": "New",
+    "featured": "Featured"
+  },
+  "search": {
+    "placeholder": "Search by city, neighborhood, or address..."
+  },
+  "filter": {
+    "priceRange": "Price Range",
+    "min": "Min",
+    "max": "Max",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "showResults": "Show {count} Results",
+    "showProperties": "Show Properties",
+    "clearAll": "Clear all filters",
+    "locationPlaceholder": "City, neighborhood, or address",
+    "amenities": "Amenities & Features"
+  },
+  "amenities": {
+    "pool": "Swimming Pool",
+    "gym": "Gym",
+    "parking": "Parking",
+    "ac": "Air Conditioning",
+    "wifi": "High-speed Wifi",
+    "patio": "Patio / Terrace"
+  },
+  "propertyDetails": {
+    "premium": "Premium",
+    "viewAllPhotos": "View All Photos",
+    "propertyFeatures": "Property Features",
+    "squareMeters": "Square Meters",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "type": "Type",
+    "aboutThis": "About this {type}",
+    "readMore": "Read more",
+    "amenities": "Amenities",
+    "estimatedPayment": "Estimated Payment",
+    "mortgageStarting": "Starting from {amount}/mo with 20% down",
+    "calculateMortgage": "Calculate Mortgage",
+    "scheduleVisit": "Schedule Visit",
+    "contactAgent": "Contact Agent",
+    "topRatedAgent": "Top Rated Agent"
+  }
+}

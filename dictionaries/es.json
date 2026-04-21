@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "buy": "Comprar",
+    "rent": "Rentar",
+    "sell": "Vender",
+    "savedHomes": "Favoritos",
+    "profileAlt": "Foto de perfil"
+  },
+  "common": {
+    "viewAll": "Ver todo",
+    "search": "Buscar",
+    "beds": "Hab",
+    "baths": "Baños",
+    "sqft": "m²",
+    "price": "Precio",
+    "location": "Ubicación",
+    "type": "Tipo",
+    "amenities": "Amenidades",
+    "anyType": "Cualquier tipo",
+    "apply": "Aplicar",
+    "clearAll": "Limpiar todo",
+    "filters": "Filtros",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "allRightsReserved": "Todos los derechos reservados.",
+    "types": {
+      "all": "Todo",
+      "house": "Casa",
+      "apartment": "Apartamento",
+      "villa": "Villa",
+      "penthouse": "Penthouse"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Encuentra tu {sanctuary}",
+      "sanctuary": "santuario"
+    },
+    "featured": {
+      "title": "Colecciones Destacadas",
+      "subtitle": "Propiedades curadas para el ojo exigente."
+    },
+    "listings": {
+      "newInMarket": "Nuevas en el mercado",
+      "searchResults": "Resultados de búsqueda",
+      "freshOpportunities": "Nuevas oportunidades añadidas esta semana.",
+      "matchingCriteria": "Se encontraron {count} propiedades que coinciden con tus criterios."
+    }
+  },
+  "propertyCard": {
+    "new": "Nuevo",
+    "featured": "Destacado"
+  },
+  "search": {
+    "placeholder": "Busca por ciudad, barrio o dirección..."
+  },
+  "filter": {
+    "priceRange": "Rango de precio",
+    "min": "Mín",
+    "max": "Máx",
+    "bedrooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "showResults": "Mostrar {count} resultados",
+    "showProperties": "Mostrar propiedades",
+    "clearAll": "Limpiar todos los filtros",
+    "locationPlaceholder": "Ciudad, barrio o dirección",
+    "amenities": "Amenidades y características"
+  },
+  "amenities": {
+    "pool": "Piscina",
+    "gym": "Gimnasio",
+    "parking": "Estacionamiento",
+    "ac": "Aire acondicionado",
+    "wifi": "Wifi de alta velocidad",
+    "patio": "Patio / Terraza"
+  },
+  "propertyDetails": {
+    "premium": "Premium",
+    "viewAllPhotos": "Ver todas las fotos",
+    "propertyFeatures": "Características de la propiedad",
+    "squareMeters": "Metros cuadrados",
+    "bedrooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "type": "Tipo",
+    "aboutThis": "Acerca de esta {type}",
+    "readMore": "Leer más",
+    "amenities": "Amenidades",
+    "estimatedPayment": "Pago estimado",
+    "mortgageStarting": "Desde {amount}/mes con 20% de enganche",
+    "calculateMortgage": "Calcular hipoteca",
+    "scheduleVisit": "Agendar visita",
+    "contactAgent": "Contactar agente",
+    "topRatedAgent": "Agente destacado"
+  }
+}

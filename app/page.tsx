@@ -4,6 +4,8 @@ import PropertyCard from "@/components/ui/PropertyCard";
 import Pagination from "@/components/ui/Pagination";
 import SearchBar from "@/components/ui/SearchBar";
 import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
+import { getDictionary, Locale, defaultLocale } from "@/lib/i18n";
 
 const PAGE_SIZE = 8;
 
@@ -12,6 +14,10 @@ export default async function Home({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value as Locale) || defaultLocale;
+  const dict = await getDictionary(locale);
+
   const params = await searchParams;
   const page = (params.page as string) || "1";
   const location = params.location as string;
@@ -72,17 +78,17 @@ export default async function Home({
 
   return (
     <>
-      <Navbar />
+      <Navbar locale={locale} dict={dict} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <section className="py-12 md:py-16">
           <div className="max-w-3xl mx-auto text-center space-y-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-nordic-dark leading-tight">
-              Find your{" "}
+              {dict.home.hero.title.split("{sanctuary}")[0]}
               <span className="relative inline-block">
-                <span className="relative z-10 font-medium">sanctuary</span>
+                <span className="relative z-10 font-medium">{dict.home.hero.sanctuary}</span>
                 <span className="absolute bottom-2 left-0 w-full h-3 bg-mosque/20 -rotate-1 z-0"></span>
               </span>
-              .
+              {dict.home.hero.title.split("{sanctuary}")[1]}
             </h1>
             
             <SearchBar />
@@ -96,22 +102,22 @@ export default async function Home({
             <div className="flex items-end justify-between mb-8">
               <div>
                 <h2 className="text-2xl font-light text-nordic-dark">
-                  Featured Collections
+                  {dict.home.featured.title}
                 </h2>
                 <p className="text-nordic-muted mt-1 text-sm">
-                  Curated properties for the discerning eye.
+                  {dict.home.featured.subtitle}
                 </p>
               </div>
               <a
                 className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity"
                 href="#"
               >
-                View all <span className="material-icons text-sm">arrow_forward</span>
+                {dict.common.viewAll} <span className="material-icons text-sm">arrow_forward</span>
               </a>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {featuredProperties.map((property) => (
-                <PropertyCard key={property.id} property={property} featured />
+                <PropertyCard key={property.id} property={property} featured dict={dict} />
               ))}
             </div>
           </section>
@@ -122,12 +128,12 @@ export default async function Home({
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="text-2xl font-light text-nordic-dark">
-                {hasFilters ? "Search Results" : "New in Market"}
+                {hasFilters ? dict.home.listings.searchResults : dict.home.listings.newInMarket}
               </h2>
               <p className="text-nordic-muted mt-1 text-sm">
                 {hasFilters 
-                  ? `Found ${count || 0} properties matching your criteria.`
-                  : "Fresh opportunities added this week."}
+                  ? dict.home.listings.matchingCriteria.replace("{count}", (count || 0).toString())
+                  : dict.home.listings.freshOpportunities}
               </p>
             </div>
           </div>
@@ -144,12 +150,12 @@ export default async function Home({
                     : "h-full"
                 }
               >
-                <PropertyCard property={property} />
+                <PropertyCard property={property} dict={dict} />
               </div>
             ))}
           </div>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} dict={dict} />
         </section>
       </main>
     </>

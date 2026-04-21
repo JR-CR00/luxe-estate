@@ -3,9 +3,10 @@ import Link from 'next/link';
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  dict: any;
 }
 
-export default function Pagination({ currentPage, totalPages }: PaginationProps) {
+export default function Pagination({ currentPage, totalPages, dict }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -26,7 +27,7 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
         `}
       >
         <span className="material-icons text-base leading-none">arrow_back</span>
-        Anterior
+        {dict.common.prev}
       </Link>
 
       {/* Page numbers */}
@@ -61,7 +62,7 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
             : 'border-nordic-dark/5 text-nordic-muted/40 bg-white/50 pointer-events-none'}
         `}
       >
-        Siguiente
+        {dict.common.next}
         <span className="material-icons text-base leading-none">arrow_forward</span>
       </Link>
     </div>

@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useI18n } from "@/components/providers/I18nProvider";
 
 export default function SearchBar() {
+  const { dict } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("location") || "");
@@ -29,7 +31,7 @@ export default function SearchBar() {
       </div>
       <input
         className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white text-nordic-dark shadow-soft placeholder-nordic-muted/60 focus:ring-2 focus:ring-mosque transition-all text-lg"
-        placeholder="Search by city, neighborhood, or address..."
+        placeholder={dict.search.placeholder}
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -38,7 +40,7 @@ export default function SearchBar() {
         type="submit"
         className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20"
       >
-        Search
+        {dict.common.search}
       </button>
     </form>
   );

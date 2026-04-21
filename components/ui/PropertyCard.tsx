@@ -26,9 +26,10 @@ export interface PropertyRecord {
 interface PropertyCardProps {
   property: PropertyRecord;
   featured?: boolean;
+  dict: any;
 }
 
-export default function PropertyCard({ property, featured = false }: PropertyCardProps) {
+export default function PropertyCard({ property, featured = false, dict }: PropertyCardProps) {
   // Normalize snake_case (Supabase) and camelCase (mock) fields
   const imageUrl = property.property_images?.[0]?.image_url ?? property.imageUrl ?? "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop";
   const priceType = property.price_type ?? property.priceType ?? null;
@@ -47,7 +48,7 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             {property.is_new && (
               <span className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">
-                New
+                {dict.propertyCard.new}
               </span>
             )}
             {property.badges && property.badges[0] && (
@@ -81,13 +82,13 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
           </div>
           <div className="flex items-center gap-6 mt-6 pt-6 border-t border-nordic-dark/5">
             <div className="flex items-center gap-2 text-nordic-muted text-sm">
-              <span className="material-icons text-lg">king_bed</span> {property.beds} Beds
+              <span className="material-icons text-lg">king_bed</span> {property.beds} {dict.common.beds}
             </div>
             <div className="flex items-center gap-2 text-nordic-muted text-sm">
-              <span className="material-icons text-lg">bathtub</span> {property.baths} Baths
+              <span className="material-icons text-lg">bathtub</span> {property.baths} {dict.common.baths}
             </div>
             <div className="flex items-center gap-2 text-nordic-muted text-sm">
-              <span className="material-icons text-lg">square_foot</span> {property.area.toLocaleString()} m²
+              <span className="material-icons text-lg">square_foot</span> {property.area.toLocaleString()} {dict.common.sqft}
             </div>
           </div>
         </div>
@@ -119,7 +120,7 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
         {/* New badge */}
         {property.is_new && (
           <div className="absolute top-3 left-3 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded shadow-md">
-            New
+            {dict.propertyCard.new}
           </div>
         )}
       </div>
@@ -139,13 +140,13 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
         <p className="text-nordic-muted text-xs mb-4">{property.location}</p>
         <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
           <div className="flex items-center gap-1 text-nordic-muted text-xs">
-            <span className="material-icons text-sm text-mosque/80">king_bed</span> {property.beds}
+            <span className="material-icons text-sm text-mosque/80">king_bed</span> {property.beds} {dict.common.beds}
           </div>
           <div className="flex items-center gap-1 text-nordic-muted text-xs">
-            <span className="material-icons text-sm text-mosque/80">bathtub</span> {property.baths}
+            <span className="material-icons text-sm text-mosque/80">bathtub</span> {property.baths} {dict.common.baths}
           </div>
           <div className="flex items-center gap-1 text-nordic-muted text-xs">
-            <span className="material-icons text-sm text-mosque/80">square_foot</span> {property.area}m²
+            <span className="material-icons text-sm text-mosque/80">square_foot</span> {property.area}{dict.common.sqft}
           </div>
         </div>
       </div>
