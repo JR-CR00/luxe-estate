@@ -19,7 +19,7 @@ export default async function Home({
   // Fetch properties flagged as featured in the DB
   const { data: featuredProperties } = await supabase
     .from("properties")
-    .select("*")
+    .select("*, property_images(image_url)")
     .eq("is_featured", true)
     .order("created_at", { ascending: false });
 
@@ -29,7 +29,7 @@ export default async function Home({
 
   const { data: newProperties, count } = await supabase
     .from("properties")
-    .select("*", { count: "exact" })
+    .select("*, property_images(image_url)", { count: "exact" })
     .eq("is_featured", false)
     .order("created_at", { ascending: false })
     .range(from, to);

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 // Supports both Supabase DB records (snake_case) and legacy mock data (camelCase)
 export interface PropertyRecord {
@@ -12,13 +13,14 @@ export interface PropertyRecord {
   beds: number;
   baths: number;
   area: number;
-  image_url?: string;
+  property_images?: { image_url: string }[];
   imageUrl?: string; // legacy camelCase support
   type: string;
   status: "FOR SALE" | "FOR RENT";
   badges?: string[] | null;
   is_new?: boolean | null;
   is_featured?: boolean | null;
+  slug?: string | null;
 }
 
 interface PropertyCardProps {
@@ -28,12 +30,12 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ property, featured = false }: PropertyCardProps) {
   // Normalize snake_case (Supabase) and camelCase (mock) fields
-  const imageUrl = property.image_url ?? property.imageUrl ?? "";
+  const imageUrl = property.property_images?.[0]?.image_url ?? property.imageUrl ?? "";
   const priceType = property.price_type ?? property.priceType ?? null;
 
   if (featured) {
     return (
-      <div className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer">
+      <Link href={property.slug ? `/properties/${property.slug}` : "#"} className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer block">
         <div className="aspect-[4/3] w-full overflow-hidden relative">
           <Image
             alt={property.title}
@@ -89,12 +91,12 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     );
   }
 
   return (
-    <article className="bg-white rounded-xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 group cursor-pointer h-full flex flex-col">
+    <Link href={property.slug ? `/properties/${property.slug}` : "#"} className="bg-white rounded-xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 group cursor-pointer h-full flex flex-col block">
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
           alt={property.title}
@@ -147,6 +149,6 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
