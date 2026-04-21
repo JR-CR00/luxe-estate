@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import FilterBar from "@/components/ui/FilterBar";
 import PropertyCard from "@/components/ui/PropertyCard";
 import Pagination from "@/components/ui/Pagination";
+import SearchBar from "@/components/ui/SearchBar";
 import { createClient } from "@/lib/supabase/server";
 
 const PAGE_SIZE = 8;
@@ -11,26 +12,58 @@ export default async function Home({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { page = "1" } = await searchParams;
-  const currentPage = Math.max(1, parseInt(page as string, 10) || 1);
+  const params = await searchParams;
+  const page = (params.page as string) || "1";
+  const location = params.location as string;
+  const minPrice = params.minPrice as string;
+  const maxPrice = params.maxPrice as string;
+  const type = params.type as string;
+  const beds = params.beds as string;
+  const baths = params.baths as string;
+  const amenities = params.amenities as string;
 
+  const currentPage = Math.max(1, parseInt(page, 10) || 1);
   const supabase = await createClient();
 
-  // Fetch properties flagged as featured in the DB
-  const { data: featuredProperties } = await supabase
-    .from("properties")
-    .select("*, property_images(image_url)")
-    .eq("is_featured", true)
-    .order("created_at", { ascending: false });
+  // Determine if any filters are active
+  const hasFilters = !!(location || minPrice || maxPrice || type || beds || baths || amenities);
 
-  // Fetch paginated non-featured properties
+  // Fetch properties flagged as featured (only show if no filters or adjust as needed)
+  let featuredProperties = [];
+  if (!hasFilters) {
+    const { data } = await supabase
+      .from("properties")
+      .select("*, property_images(image_url)")
+      .eq("is_featured", true)
+      .order("created_at", { ascending: false });
+    featuredProperties = data || [];
+  }
+
+  // Fetch paginated properties with filters
   const from = (currentPage - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const { data: newProperties, count } = await supabase
+  let query = supabase
     .from("properties")
-    .select("*, property_images(image_url)", { count: "exact" })
-    .eq("is_featured", false)
+    .select("*, property_images(image_url)", { count: "exact" });
+
+  if (location) query = query.ilike("location", `%${location}%`);
+  if (minPrice) query = query.gte("price", parseFloat(minPrice));
+  if (maxPrice) query = query.lte("price", parseFloat(maxPrice));
+  if (type && type !== "Any Type") query = query.eq("type", type);
+  if (beds) query = query.gte("beds", parseInt(beds));
+  if (baths) query = query.gte("baths", parseInt(baths));
+  if (amenities) {
+    const amenitiesList = amenities.split(",");
+    query = query.contains("amenities", amenitiesList);
+  }
+
+  // If filtered, don't double count featured ones if they are in the same list
+  if (!hasFilters) {
+    query = query.eq("is_featured", false);
+  }
+
+  const { data: properties, count } = await query
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -50,21 +83,8 @@ export default async function Home({
               </span>
               .
             </h1>
-            <div className="relative group max-w-2xl mx-auto">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span className="material-icons text-nordic-muted text-2xl group-focus-within:text-mosque transition-colors">
-                  search
-                </span>
-              </div>
-              <input
-                className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white text-nordic-dark shadow-soft placeholder-nordic-muted/60 focus:ring-2 focus:ring-mosque focus:bg-white:bg-white/10 transition-all text-lg"
-                placeholder="Search by city, neighborhood, or address..."
-                type="text"
-              />
-              <button className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20">
-                Search
-              </button>
-            </div>
+            
+            <SearchBar />
             <FilterBar />
           </div>
         </section>
@@ -96,32 +116,23 @@ export default async function Home({
           </section>
         )}
 
-        {/* New in Market */}
+        {/* Properties List */}
         <section>
           <div className="flex items-end justify-between mb-8">
             <div>
               <h2 className="text-2xl font-light text-nordic-dark">
-                New in Market
+                {hasFilters ? "Search Results" : "New in Market"}
               </h2>
               <p className="text-nordic-muted mt-1 text-sm">
-                Fresh opportunities added this week.
+                {hasFilters 
+                  ? `Found ${count || 0} properties matching your criteria.`
+                  : "Fresh opportunities added this week."}
               </p>
-            </div>
-            <div className="hidden md:flex bg-white p-1 rounded-lg">
-              <button className="px-4 py-1.5 rounded-md text-sm font-medium bg-nordic-dark text-white shadow-sm">
-                All
-              </button>
-              <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark:text-white">
-                Buy
-              </button>
-              <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark:text-white">
-                Rent
-              </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {(newProperties ?? []).map((property, index) => (
+            {(properties ?? []).map((property, index) => (
               <div
                 key={property.id}
                 className={
