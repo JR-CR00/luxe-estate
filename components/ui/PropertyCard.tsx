@@ -30,7 +30,7 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ property, featured = false }: PropertyCardProps) {
   // Normalize snake_case (Supabase) and camelCase (mock) fields
-  const imageUrl = property.property_images?.[0]?.image_url ?? property.imageUrl ?? "";
+  const imageUrl = property.property_images?.[0]?.image_url ?? property.imageUrl ?? "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop";
   const priceType = property.price_type ?? property.priceType ?? null;
 
   if (featured) {
@@ -105,7 +105,7 @@ export default function PropertyCard({ property, featured = false }: PropertyCar
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           src={imageUrl}
         />
-        <button className="absolute top-3 right-3 p-2 bg-white/90 rounded-full hover:bg-mosque hover:text-white transition-colors text-nordic-dark z-10">
+        <button className="absolute top-3 right-3 w-9 h-9 bg-white/90 rounded-full hover:bg-mosque hover:text-white transition-colors text-nordic-dark z-10 flex items-center justify-center shadow-sm">
           <span className="material-icons text-lg">favorite_border</span>
         </button>
         {/* Status badge */}

@@ -35,7 +35,8 @@ export default async function Home({
       .from("properties")
       .select("*, property_images(image_url)")
       .eq("is_featured", true)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(2);
     featuredProperties = data || [];
   }
 
