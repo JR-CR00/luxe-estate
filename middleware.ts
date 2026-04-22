@@ -1,11 +1,45 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 import { locales, defaultLocale } from './lib/i18n';
 
-export function middleware(request: NextRequest) {
-  // Get the locale from cookies
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
+
+  // Supabase session handling
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  // Refresh session if expired - required for Server Components
+  // https://supabase.com/docs/guides/auth/server-side/nextjs
+  await supabase.auth.getUser();
+
+  // i18n logic
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
 
-  // If no cookie, try to detect from headers or use default
   if (!cookieLocale) {
     const acceptLanguage = request.headers.get('accept-language');
     let preferredLocale = defaultLocale;
@@ -21,24 +55,25 @@ export function middleware(request: NextRequest) {
       }
     }
 
-    // Redirect to set the cookie if needed, or just proceed and set it in the response
-    const response = NextResponse.next();
     response.cookies.set('NEXT_LOCALE', preferredLocale, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
     });
-    return response;
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  // Match all request paths except for the ones starting with:
-  // - api (API routes)
-  // - _next/static (static files)
-  // - _next/image (image optimization files)
-  // - favicon.ico (favicon file)
-  // - images (public images)
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|images).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - Error pages: 404, 500 etc
+     * - public folder files
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };

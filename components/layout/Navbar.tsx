@@ -1,9 +1,36 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import LanguageSelector from "@/components/ui/LanguageSelector";
 import { Locale } from "@/lib/i18n";
+import { createClient } from "@/lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) {
+  const [user, setUser] = useState<User | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,7 +40,7 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
               <span className="material-icons text-white text-lg">apartment</span>
             </div>
             <span className="text-xl font-semibold tracking-tight text-nordic-dark">
-              LuxeEstate
+              Luxe Estate
             </span>
           </Link>
           <div className="hidden md:flex items-center space-x-8">
@@ -44,24 +71,45 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
           </div>
           <div className="flex items-center space-x-6">
             <LanguageSelector currentLocale={locale} />
-            <button className="text-nordic-dark hover:text-mosque:text-white transition-colors">
+            <button className="text-nordic-dark hover:text-mosque transition-colors">
               <span className="material-icons">search</span>
             </button>
-            <button className="text-nordic-dark hover:text-mosque:text-white transition-colors relative">
+            <button className="text-nordic-dark hover:text-mosque transition-colors relative">
               <span className="material-icons">notifications_none</span>
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light"></span>
             </button>
-            <button className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2">
-              <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all relative">
-                <Image
-                  alt={dict.nav.profileAlt}
-                  className="object-cover"
-                  fill
-                  sizes="36px"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAWhQZ663Bd08kmzjbOPmUk4UIxYooNONShMEFXLR-DtmVi6Oz-TiaY77SPwFk7g0OobkeZEOMvt6v29mSOD0Xm2g95WbBG3ZjWXmiABOUwGU0LOySRfVDo-JTXQ0-gtwjWxbmue0qDm91m-zEOEZwAW6iRFB1qC1bAU-wkjxm67Sbztq8w7srHkFT9bVEC86qG-FzhOBTomhAurNRmx9l8Yfqabk328NfdKuVLckgCdaPsNFE3yN65MeoRi05GA_gXIMwG4YDIeA"
-                />
-              </div>
-            </button>
+            
+            {user ? (
+              <button 
+                onClick={() => supabase.auth.signOut()}
+                className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2 group"
+              >
+                <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all relative">
+                  {avatarUrl ? (
+                    <Image
+                      alt={dict.nav.profileAlt}
+                      className="object-cover"
+                      fill
+                      sizes="36px"
+                      src={avatarUrl}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-mosque/10 text-mosque">
+                      <span className="material-icons text-xl">person</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+            ) : (
+              <Link 
+                href="/auth/login"
+                className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2 group"
+              >
+                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center ring-2 ring-transparent group-hover:ring-mosque transition-all">
+                  <span className="material-icons text-nordic-dark/50 group-hover:text-mosque">person</span>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>

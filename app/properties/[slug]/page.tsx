@@ -24,12 +24,12 @@ export async function generateMetadata({
 
   if (!property) {
     return {
-      title: "Property Not Found | LuxeEstate",
+      title: "Property Not Found | Luxe Estate",
     };
   }
 
   return {
-    title: `${property.title} | ${property.currency}${property.price.toLocaleString()} | LuxeEstate`,
+    title: `${property.title} | ${property.currency}${property.price.toLocaleString()} | Luxe Estate`,
     description: `Discover ${property.title} in ${property.location}. Check out the details and schedule a visit.`,
   };
 }
@@ -280,7 +280,7 @@ export default async function PropertyDetailsPage({
       <footer className="bg-white border-t border-slate-200 mt-auto py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-sm text-nordic-dark/50">
-            © 2026 LuxeEstate Inc. {dict.common.allRightsReserved}
+            © 2026 Luxe Estate Inc. {dict.common.allRightsReserved}
           </div>
           <div className="flex gap-6">
             <Link className="text-nordic-dark/40 hover:text-mosque transition-colors" href="#">
