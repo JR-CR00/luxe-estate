@@ -4,7 +4,10 @@
     "rent": "Rent",
     "sell": "Sell",
     "savedHomes": "Saved Homes",
-    "profileAlt": "Profile photo"
+    "profileAlt": "Profile photo",
+    "login": "Sign In",
+    "signup": "Sign Up",
+    "logout": "Sign Out"
   },
   "common": {
     "viewAll": "View all",
@@ -91,5 +94,18 @@
     "scheduleVisit": "Schedule Visit",
     "contactAgent": "Contact Agent",
     "topRatedAgent": "Top Rated Agent"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome to Luxe Estate",
+      "subtitle": "Unlock exclusive properties worldwide.",
+      "continueWithGoogle": "Continue with Google",
+      "continueWithGithub": "Continue with GitHub",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "helpCenter": "Help Center"
+    }
   }
 }

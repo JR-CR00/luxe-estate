@@ -34,9 +34,9 @@ export default function LoginPage() {
             <span className="material-symbols-rounded text-3xl">real_estate_agent</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-[#19322F] dark:text-white mb-2">
-            Welcome to Luxe Estate
+            {dict.auth.login.title}
           </h1>
-          <p className="text-[#19322F]/60 dark:text-gray-400">Unlock exclusive properties worldwide.</p>
+          <p className="text-[#19322F]/60 dark:text-gray-400">{dict.auth.login.subtitle}</p>
         </div>
 
         <div className="bg-white dark:bg-[#152e2a] rounded-2xl shadow-soft p-8 sm:p-10 border border-white/50 dark:border-[#006655]/20 backdrop-blur-sm">
@@ -64,7 +64,7 @@ export default function LoginPage() {
                   fill="#EA4335"
                 ></path>
               </svg>
-              <span className="relative z-10">Continue with Google</span>
+              <span className="relative z-10">{dict.auth.login.continueWithGoogle}</span>
             </button>
 
             <button
@@ -79,14 +79,14 @@ export default function LoginPage() {
               >
                 <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
               </svg>
-              <span className="relative z-10">Continue with GitHub</span>
+              <span className="relative z-10">{dict.auth.login.continueWithGithub}</span>
             </button>
           </div>
 
           <p className="mt-8 text-center text-sm text-[#19322F]/70 dark:text-gray-400">
-            Don&apos;t have an account?{' '}
+            {dict.auth.login.noAccount}{' '}
             <a className="font-semibold text-[#006655] hover:text-[#004d40] transition-colors" href="#">
-              Sign up
+              {dict.auth.login.signUp}
             </a>
           </p>
         </div>
@@ -94,13 +94,13 @@ export default function LoginPage() {
         <div className="mt-8 text-center">
           <nav className="flex justify-center gap-6 text-xs text-[#19322F]/50 dark:text-gray-500">
             <a className="hover:text-[#19322F] dark:hover:text-gray-300 transition-colors" href="#">
-              Privacy Policy
+              {dict.auth.login.privacyPolicy}
             </a>
             <a className="hover:text-[#19322F] dark:hover:text-gray-300 transition-colors" href="#">
-              Terms of Service
+              {dict.auth.login.termsOfService}
             </a>
             <a className="hover:text-[#19322F] dark:hover:text-gray-300 transition-colors" href="#">
-              Help Center
+              {dict.auth.login.helpCenter}
             </a>
           </nav>
         </div>

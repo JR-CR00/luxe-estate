@@ -30,6 +30,18 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
   }, [supabase]);
 
   const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen && !(event.target as Element).closest('.user-menu-container')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMenuOpen]);
 
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
@@ -79,37 +91,90 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light"></span>
             </button>
             
-            {user ? (
+            <div className="relative user-menu-container">
               <button 
-                onClick={() => supabase.auth.signOut()}
-                className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2 group"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="w-10 h-10 rounded-full bg-gray-100 dark:bg-[#1a3833] overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all relative cursor-pointer group flex items-center justify-center"
               >
-                <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all relative">
-                  {avatarUrl ? (
+                {user ? (
+                  avatarUrl ? (
                     <Image
                       alt={dict.nav.profileAlt}
-                      className="object-cover"
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
                       fill
-                      sizes="36px"
+                      sizes="40px"
                       src={avatarUrl}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-mosque/10 text-mosque">
                       <span className="material-icons text-xl">person</span>
                     </div>
+                  )
+                ) : (
+                  <span className="material-icons text-nordic-dark/40 group-hover:text-mosque transition-colors">account_circle</span>
+                )}
+              </button>
+
+              {isMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1a3833] rounded-xl shadow-xl border border-nordic-dark/5 dark:border-[#006655]/20 py-2 z-[60] animate-in fade-in zoom-in duration-200 origin-top-right">
+                  {user ? (
+                    <>
+                      <div className="px-4 py-3 border-b border-nordic-dark/5 dark:border-[#006655]/10 mb-1">
+                        <p className="text-xs text-nordic-dark/50 dark:text-gray-400 font-medium truncate uppercase tracking-wider">
+                          {user.email}
+                        </p>
+                      </div>
+                      <Link 
+                        href="#"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-nordic-dark dark:text-gray-200 hover:bg-mosque/5 dark:hover:bg-[#006655]/10 transition-colors"
+                      >
+                        <span className="material-icons text-lg text-mosque">person_outline</span>
+                        Profile Settings
+                      </Link>
+                      <Link 
+                        href="#"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-nordic-dark dark:text-gray-200 hover:bg-mosque/5 dark:hover:bg-[#006655]/10 transition-colors"
+                      >
+                        <span className="material-icons text-lg text-mosque">favorite_border</span>
+                        {dict.nav.savedHomes}
+                      </Link>
+                      <div className="h-px bg-nordic-dark/5 dark:border-[#006655]/10 my-1"></div>
+                      <button 
+                        onClick={() => {
+                          supabase.auth.signOut();
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors cursor-pointer"
+                      >
+                        <span className="material-icons text-lg">logout</span>
+                        {dict.nav.logout}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link 
+                        href="/auth/login"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-nordic-dark dark:text-gray-200 hover:bg-mosque/5 dark:hover:bg-[#006655]/10 transition-colors"
+                      >
+                        <span className="material-icons text-lg text-mosque">login</span>
+                        {dict.nav.login}
+                      </Link>
+                      <Link 
+                        href="/auth/login"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-nordic-dark dark:text-gray-200 hover:bg-mosque/5 dark:hover:bg-[#006655]/10 transition-colors"
+                      >
+                        <span className="material-icons text-lg text-mosque">person_add</span>
+                        {dict.nav.signup}
+                      </Link>
+                    </>
                   )}
                 </div>
-              </button>
-            ) : (
-              <Link 
-                href="/auth/login"
-                className="flex items-center gap-2 pl-2 border-l border-nordic-dark/10 ml-2 group"
-              >
-                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center ring-2 ring-transparent group-hover:ring-mosque transition-all">
-                  <span className="material-icons text-nordic-dark/50 group-hover:text-mosque">person</span>
-                </div>
-              </Link>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
