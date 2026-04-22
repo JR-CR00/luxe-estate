@@ -7,7 +7,8 @@
     "profileAlt": "Foto de perfil",
     "login": "Iniciar sesión",
     "signup": "Registrarse",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "adminDashboard": "Panel de Control"
   },
   "common": {
     "viewAll": "Ver todo",

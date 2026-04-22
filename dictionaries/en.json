@@ -7,7 +7,8 @@
     "profileAlt": "Profile photo",
     "login": "Sign In",
     "signup": "Sign Up",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "adminDashboard": "Admin Dashboard"
   },
   "common": {
     "viewAll": "View all",

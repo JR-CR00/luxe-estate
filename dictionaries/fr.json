@@ -7,7 +7,8 @@
     "profileAlt": "Photo de profil",
     "login": "Se connecter",
     "signup": "S'inscrire",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "adminDashboard": "Tableau de Bord Admin"
   },
   "common": {
     "viewAll": "Voir tout",

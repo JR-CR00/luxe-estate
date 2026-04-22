@@ -35,7 +35,30 @@ export async function middleware(request: NextRequest) {
 
   // Refresh session if expired - required for Server Components
   // https://supabase.com/docs/guides/auth/server-side/nextjs
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Admin route protection
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
+  
+  if (isAdminRoute) {
+    if (!user) {
+      const redirectUrl = new URL('/auth/login', request.url);
+      redirectUrl.searchParams.set('next', request.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // Check user role from the database
+    const { data: profile, error } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (error || !profile || profile.role !== 'admin') {
+      console.warn(`Unauthorized admin access attempt by user ${user.id}`);
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
 
   // i18n logic
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;

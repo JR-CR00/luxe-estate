@@ -10,18 +10,44 @@ import { User } from "@supabase/supabase-js";
 
 export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) {
   const [user, setUser] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUserData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        
+        setUserRole(profile?.role || 'user');
+      } else {
+        setUserRole(null);
+      }
     };
 
-    getUser();
+    getUserData();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const newUser = session?.user ?? null;
+      setUser(newUser);
+      
+      if (newUser) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', newUser.id)
+          .single();
+        
+        setUserRole(profile?.role || 'user');
+      } else {
+        setUserRole(null);
+      }
     });
 
     return () => {
@@ -42,6 +68,18 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMenuOpen]);
+
+  const handleSignOut = async () => {
+    try {
+      setIsMenuOpen(false);
+      await supabase.auth.signOut();
+      // Hard redirect to home to clear all cache and state
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+      window.location.href = '/';
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-background-light/95 backdrop-blur-md border-b border-nordic-dark/10">
@@ -124,6 +162,16 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
                           {user.email}
                         </p>
                       </div>
+                      {userRole === 'admin' && (
+                        <Link 
+                          href="/admin"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-nordic-dark dark:text-gray-200 hover:bg-mosque/5 dark:hover:bg-[#006655]/10 transition-colors font-semibold"
+                        >
+                          <span className="material-icons text-lg text-amber-500">admin_panel_settings</span>
+                          {dict.nav.adminDashboard}
+                        </Link>
+                      )}
                       <Link 
                         href="#"
                         onClick={() => setIsMenuOpen(false)}
@@ -142,10 +190,8 @@ export default function Navbar({ locale, dict }: { locale: Locale; dict: any }) 
                       </Link>
                       <div className="h-px bg-nordic-dark/5 dark:border-[#006655]/10 my-1"></div>
                       <button 
-                        onClick={() => {
-                          supabase.auth.signOut();
-                          setIsMenuOpen(false);
-                        }}
+                        type="button"
+                        onClick={handleSignOut}
                         className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors cursor-pointer"
                       >
                         <span className="material-icons text-lg">logout</span>
