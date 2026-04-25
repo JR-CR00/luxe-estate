@@ -8,9 +8,10 @@ interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
   totalResults: number;
+  targetPath?: string;
 }
 
-export default function FilterModal({ isOpen, onClose, totalResults }: FilterModalProps) {
+export default function FilterModal({ isOpen, onClose, totalResults, targetPath = "/" }: FilterModalProps) {
   const { dict } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -64,7 +65,7 @@ export default function FilterModal({ isOpen, onClose, totalResults }: FilterMod
     if (selectedAmenities.length > 0) params.set("amenities", selectedAmenities.join(",")); else params.delete("amenities");
     
     params.set("page", "1"); // Reset to first page
-    router.push(`/?${params.toString()}`);
+    router.push(`${targetPath}?${params.toString()}`);
     onClose();
   };
 
